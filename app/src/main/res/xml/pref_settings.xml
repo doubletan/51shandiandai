@@ -1,0 +1,38 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/remind">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="enable_remind_add_bill"
+            android:title="@string/enable_remind_add_bill" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="enable_remind_exceeding"
+            android:title="@string/enable_remind_exceeding" />
+
+        <Preference
+            android:enabled="false"
+            android:key="remind_add_bill"
+            android:summary="@string/remind_add_bill_default_summary"
+            android:title="@string/remind_add_bill" />
+
+        <EditTextPreference
+            android:enabled="false"
+            android:inputType="numberDecimal"
+            android:key="remind_exceeding"
+            android:summary="@string/remind_exceeding_default_summary"
+            android:title="@string/remind_exceeding" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/other">
+        <Preference
+            android:key="check_for_update"
+            android:summary="@string/info_default"
+            android:title="@string/check_for_update" />
+        <Preference
+            android:key="help_and_feedback"
+            android:title="@string/help_and_feedback" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

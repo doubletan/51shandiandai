@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">PersonalBill</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="feature">功能</string>
+    <string name="remind">提醒</string>
+    <string name="enable_remind_add_bill">记账提醒</string>
+    <string name="remind_add_bill">提醒时间</string>
+    <string name="remind_add_bill_default_summary">10:00</string>
+    <string name="other">其他</string>
+    <string name="version_name">当前版本: %s</string>
+    <string name="enable_remind_exceeding">超额提醒</string>
+    <string name="remind_exceeding">设置额度</string>
+    <string name="remind_exceeding_default_summary">1000</string>
+    <string name="info_default">Unknown</string>
+    <string name="check_for_update">检查更新</string>
+    <string name="already_the_newest_version">已是最新版本</string>
+    <string name="help_and_feedback">帮助与反馈</string>
+    <string name="feature_is_not_yet_open">此功能暂未开放</string>
+</resources>
