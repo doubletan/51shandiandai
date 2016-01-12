@@ -1,6 +1,5 @@
 package org.xqj.bill;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
@@ -12,6 +11,7 @@ import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.text.format.DateFormat;
+import android.view.MenuItem;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -42,6 +42,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -164,7 +173,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
 
         private void showTimePickerDialog() {
-            mDialogFragment = new TimePickerDialogFragment(this);
+            mDialogFragment = new BillDialogFragment(this, 0);
             mDialogFragment.show(getChildFragmentManager(), "TimePicker");
         }
 
@@ -180,7 +189,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
 
         @Override
-        public Dialog onCreateDialog() {
+        public Dialog onCreateCustomDialog(int dialogId) {
             Calendar calendar = Calendar.getInstance();
             return new TimePickerDialog(
                     getActivity(),
@@ -189,38 +198,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     calendar.get(Calendar.MINUTE),
                     DateFormat.is24HourFormat(getActivity()));
         }
-    }
-
-    /**
-     * 时间选择页面
-     */
-    public static class TimePickerDialogFragment extends DialogFragment {
-
-        private DialogCreatable mCreatable;
-
-        public TimePickerDialogFragment() {/* do nothing */}
-
-        @SuppressLint("ValidFragment")
-        public TimePickerDialogFragment(DialogCreatable fragment) {
-            mCreatable = fragment;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mCreatable.onCreateDialog();
-        }
-    }
-
-    /**
-     * Dialog 接口,用于创建对应的 Dialog
-     */
-    public interface DialogCreatable {
-
-        /**
-         * Override to build your own custom Dialog container.
-         *
-         * @return Return a new Dialog instance to be displayed by the Fragment.
-         */
-        Dialog onCreateDialog();
     }
 }

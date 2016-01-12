@@ -10,18 +10,22 @@ import io.realm.RealmObject;
  */
 public class BillItem extends RealmObject {
 
-    private int type;// 消费类型
+    private boolean income;// true 为收入
+
+    private ConsumptionType consumptionType;// 消费类型
 
     private float sum;// 金额
 
     private long dateTime;// 隶属于哪天
 
-    public int getType() {
-        return this.type;
+    private String note;// 备注
+
+    public ConsumptionType getConsumptionType() {
+        return this.consumptionType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setConsumptionType(ConsumptionType consumptionType) {
+        this.consumptionType = consumptionType;
     }
 
     public float getSum() {
@@ -38,5 +42,21 @@ public class BillItem extends RealmObject {
 
     public void setDateTime(long dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public boolean isIncome() {
+        return income;
+    }
+
+    public void setIncome(boolean income) {
+        this.income = income;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

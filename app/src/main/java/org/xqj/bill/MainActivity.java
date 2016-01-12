@@ -1,23 +1,27 @@
 package org.xqj.bill;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,10 +35,17 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private TabLayout mTabLayout;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    private static final float RELATIVE_SIZE = 1.3f;
+
+    @Bind(R.id.date) TextView mDateTextView;
+    @Bind(R.id.income) TextView mIncomeTextView;
+    @Bind(R.id.expense) TextView mExpenseTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +62,55 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(MainActivity.this, AddBillActivity.class));
             }
         });
 
+        ButterKnife.bind(this);
+        setDateString(2015, "3月14日");
+        setIncome(13456.78f);
+        setExpense(1345.78f);
     }
 
+    private void setDateString(int year, String subStr) {
+        String yearStr = Integer.toString(year);
+        String dateString = String.format(getString(R.string.date_format), yearStr, subStr);
+        int start = dateString.indexOf(subStr);
+        int end = dateString.length();
+        SpannableStringBuilder builder = new SpannableStringBuilder(dateString);
+        builder.setSpan(new RelativeSizeSpan(RELATIVE_SIZE), start, end, 0);
+        builder.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.primary_text_dark)), start, end, 0);
+        mDateTextView.setText(builder);
+    }
+
+    private void setIncome(float income) {
+        String incomeStr = Float.toString(income);
+        String incomeString = String.format(getString(R.string.income_format), incomeStr);
+        int start = incomeString.indexOf(incomeStr);
+        int end = incomeString.length();
+        SpannableStringBuilder builder = new SpannableStringBuilder(incomeString);
+        builder.setSpan(new RelativeSizeSpan(RELATIVE_SIZE), start, end, 0);
+        builder.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.primary_text_dark)), start, end, 0);
+        mIncomeTextView.setText(builder);
+    }
+
+    private void setExpense(float expense) {
+        String expenseStr = Float.toString(expense);
+        String expenseString = String.format(getString(R.string.expense_format), expenseStr);
+        int start = expenseString.indexOf(expenseStr);
+        int end = expenseString.length();
+        SpannableStringBuilder builder = new SpannableStringBuilder(expenseString);
+        builder.setSpan(new RelativeSizeSpan(RELATIVE_SIZE), start, end, 0);
+        builder.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.primary_text_dark)), start, end, 0);
+        mExpenseTextView.setText(builder);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this,SettingsActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
@@ -142,18 +190,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "明细";
                 case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
+                    return "类别报表";
             }
             return null;
         }
