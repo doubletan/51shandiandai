@@ -1,14 +1,17 @@
 package org.xqj.bill;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -43,6 +46,22 @@ import io.realm.Realm;
 public class AddBillActivity extends AppCompatActivity implements DialogCreatable,
         DatePickerDialog.OnDateSetListener, View.OnClickListener {
 
+    public static final int REQUEST_NEW_BILL = 1;
+    public static final int REQUEST_EDIT_BILL = 2;
+
+    private static final String EXTRA_ID = "id";
+
+    public static void start(Activity activity) {
+        Intent intent = new Intent(activity, AddBillActivity.class);
+        activity.startActivityForResult(intent, REQUEST_NEW_BILL);
+    }
+
+    public static void start(Activity activity, int billItemId) {
+        Intent intent = new Intent(activity, AddBillActivity.class);
+        intent.putExtra(EXTRA_ID, billItemId);
+        activity.startActivityForResult(intent, REQUEST_EDIT_BILL);
+    }
+
     private static final String KEY_ADDED_CONSUMPTION_TYPE_TO_DB = "added_consumption_type_to_db";
 
     private static final int DIALOG_DATE_PICKER = 1;
@@ -68,25 +87,30 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
     private int mMonth;
     private int mDay;
 
+    private Realm mRealm;
+
+    private BillItem mToBeUpdateBillItem;// the object to be update in edit mode
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_bill);
 
-        Realm realm = Realm.getInstance(this);
+        mRealm = Realm.getInstance(this);
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!mPreferences.getBoolean(KEY_ADDED_CONSUMPTION_TYPE_TO_DB, false)) {// 判断是否为第一次启动页面
             mPreferences.edit().putBoolean(KEY_ADDED_CONSUMPTION_TYPE_TO_DB, true).apply();
             String[] defaultTypes = getResources().getStringArray(R.array.default_consumption_type);
-            realm.beginTransaction();
+            mRealm.beginTransaction();
             // '自定义'不必加到数据库中
             for (int i = 0; i < defaultTypes.length - 2; i++) {
                 ConsumptionType type = new ConsumptionType();
                 type.setTypeName(defaultTypes[i]);
-                realm.copyToRealm(type);
+                mRealm.copyToRealm(type);
             }
             // 将默认的消费类别添加到数据库中
-            realm.commitTransaction();
+            mRealm.commitTransaction();
         }
 
         ButterKnife.bind(this);
@@ -94,14 +118,8 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
         mDateTextView.setOnClickListener(this);
         mFab.setOnClickListener(this);
 
-        Calendar calendar = Calendar.getInstance();
-        setDateText(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-
         mConsumptionTypes = new ArrayList<>();
-        for (ConsumptionType ct : realm.allObjects(ConsumptionType.class)) {
+        for (ConsumptionType ct : mRealm.allObjects(ConsumptionType.class)) {
             mConsumptionTypes.add(ct.getTypeName());
         }
         mConsumptionTypes.add("自定义");
@@ -123,6 +141,22 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
 
             }
         });
+
+        Calendar calendar = Calendar.getInstance();
+        if (getIntent().hasExtra(EXTRA_ID)) {
+            mToBeUpdateBillItem = mRealm.where(BillItem.class).equalTo("id", getIntent().getIntExtra(EXTRA_ID, -1)).findFirst();
+            calendar.setTimeInMillis(mToBeUpdateBillItem.getDateTime());
+            mNoteEditText.setText(mToBeUpdateBillItem.getNote());
+            mSumEditText.setText(Float.toString(mToBeUpdateBillItem.getSum()));
+            mConsumptionTypeSpinner.setSelection(
+                    mConsumptionTypes.indexOf(mToBeUpdateBillItem.getConsumptionType().getTypeName()));
+            mTypeGroup.check(mToBeUpdateBillItem.isIncome() ? R.id.income_btn : R.id.expense_btn);
+        }
+
+        setDateText(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -218,18 +252,27 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
         sumStr = TextUtils.isEmpty(sumStr) ? "0" : sumStr;
         float sum = Float.parseFloat(sumStr);
         if (sum != 0) {
-            Realm realm = Realm.getInstance(this);
-            BillItem item = new BillItem();
+            mRealm.beginTransaction();
+            BillItem item;
+            if (mToBeUpdateBillItem != null) {
+                item = mToBeUpdateBillItem;
+            } else {
+                item = new BillItem();
+                item.setId(getNextBillId());
+            }
             Calendar calendar = Calendar.getInstance();
             calendar.set(mYear, mMonth, mDay);
             item.setDateTime(calendar.getTimeInMillis());
-            item.setIncome(mTypeGroup.getCheckedRadioButtonId() == R.id.income);
+            item.setIncome(mTypeGroup.getCheckedRadioButtonId() == R.id.income_btn);
             item.setSum(Float.parseFloat(sumStr));
             item.setNote(mNoteEditText.getText().toString().trim());
-            item.setConsumptionType(realm.where(ConsumptionType.class).equalTo("typeName", mConsumptionTypes.get(mConsumptionTypeSpinner.getSelectedItemPosition())).findFirst());
-            realm.beginTransaction();
-            realm.copyToRealm(item);
-            realm.commitTransaction();
+            item.setConsumptionType(
+                    mRealm.where(ConsumptionType.class)
+                            .equalTo("typeName", mConsumptionTypes.get(mConsumptionTypeSpinner.getSelectedItemPosition()))
+                            .findFirst());
+            mRealm.copyToRealmOrUpdate(item);
+            mRealm.commitTransaction();
+            setResult(RESULT_OK);
             finish();
         } else {
             Toast.makeText(this, "金额不能为零", Toast.LENGTH_SHORT).show();
@@ -239,9 +282,13 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
     private void saveConsumptionType(String newType) {
         ConsumptionType type = new ConsumptionType();
         type.setTypeName(newType);
-        Realm realm = Realm.getInstance(this);
-        realm.beginTransaction();
-        realm.copyToRealm(type);
-        realm.commitTransaction();
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(type);
+        mRealm.commitTransaction();
+    }
+
+    private int getNextBillId() {
+        Number number = mRealm.where(BillItem.class).max("id");
+        return number == null ? 0 : number.intValue() + 1;
     }
 }

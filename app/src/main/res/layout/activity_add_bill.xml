@@ -29,7 +29,7 @@
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/expense"
+            android:id="@+id/expense_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/horizontal_margin"
@@ -37,7 +37,7 @@
             android:text="@string/expense" />
 
         <RadioButton
-            android:id="@+id/income"
+            android:id="@+id/income_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/horizontal_margin"

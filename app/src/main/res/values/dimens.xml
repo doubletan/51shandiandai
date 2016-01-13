@@ -8,5 +8,12 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
-    <dimen name="horizontal_margin">@dimen/activity_horizontal_margin</dimen>
+    <dimen name="horizontal_margin">16dp</dimen>
+    <dimen name="horizontal_margin_half">8dp</dimen>
+
+    <dimen name="sum_max_width">72dp</dimen>
+    <dimen name="item_text_size">16sp</dimen>
+    <dimen name="item_margin">12dp</dimen>
+
+    <dimen name="type_img_width">32dp</dimen>
 </resources>

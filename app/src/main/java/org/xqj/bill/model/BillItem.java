@@ -1,6 +1,7 @@
 package org.xqj.bill.model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * 账单项,对应一条收入/支出记录
@@ -9,6 +10,9 @@ import io.realm.RealmObject;
  *         2016/01/10.
  */
 public class BillItem extends RealmObject {
+
+    @PrimaryKey
+    private int id;
 
     private boolean income;// true 为收入
 
@@ -19,6 +23,14 @@ public class BillItem extends RealmObject {
     private long dateTime;// 隶属于哪天
 
     private String note;// 备注
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public ConsumptionType getConsumptionType() {
         return this.consumptionType;

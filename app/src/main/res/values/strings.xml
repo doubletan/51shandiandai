@@ -46,9 +46,11 @@
         <item>理财</item>
         <item>自定义</item>
     </string-array>
-    
+
     <string name="supports_up_to_four_words">最多支持4个字</string>
     <string name="input_consumption_type">请输入类别名称</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
+
+    <string name="no_related_data">暂无相关数据</string>
 </resources>
