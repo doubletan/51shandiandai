@@ -19,6 +19,5 @@
         android:drawableTop="@drawable/fail"
         android:gravity="center"
         android:text="@string/no_related_data"
-        android:textColor="@color/noDataTips"
-        android:visibility="gone" />
+        android:textColor="@color/noDataTips" />
 </FrameLayout>

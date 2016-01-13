@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -17,6 +18,14 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import static org.xqj.bill.PreferenceKeys.KEY_CHECK_FOR_UPDATE;
+import static org.xqj.bill.PreferenceKeys.KEY_ENABLE_REMIND_ADD_BILL;
+import static org.xqj.bill.PreferenceKeys.KEY_ENABLE_REMIND_EXCEEDING;
+import static org.xqj.bill.PreferenceKeys.KEY_HELP_AND_FEEDBACK;
+import static org.xqj.bill.PreferenceKeys.KEY_REMIND_ADD_BILL;
+import static org.xqj.bill.PreferenceKeys.KEY_REMIND_EXCEEDING;
+import static org.xqj.bill.PreferenceKeys.KEY_VIEW_MODE;
 
 /**
  * 设置页面
@@ -68,19 +77,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             SharedPreferences.OnSharedPreferenceChangeListener,
             TimePickerDialog.OnTimeSetListener, DialogCreatable {
 
-        private static final String KEY_CHECK_FOR_UPDATE = "check_for_update";
-        private static final String KEY_HELP_AND_FEEDBACK = "help_and_feedback";
-        private static final String KEY_ENABLE_REMIND_ADD_BILL = "enable_remind_add_bill";
-        private static final String KEY_REMIND_ADD_BILL = "remind_add_bill";
-        private static final String KEY_ENABLE_REMIND_EXCEEDING = "enable_remind_exceeding";
-        private static final String KEY_REMIND_EXCEEDING = "remind_exceeding";
-
         private Preference mCheckForUpdatePref;
         private SwitchPreference mEnableRemindAddBillPref;
         private Preference mRemindAddBillPref;
         private SwitchPreference mEnableRemindExceedingPref;
         private EditTextPreference mRemindExceedingPref;
         private Preference mHelpAndFeedbackPref;
+        private ListPreference mViewModePref;
 
         private DialogFragment mDialogFragment;
 
@@ -95,6 +98,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             mEnableRemindExceedingPref = (SwitchPreference) findPreference(KEY_ENABLE_REMIND_EXCEEDING);
             mRemindExceedingPref = (EditTextPreference) findPreference(KEY_REMIND_EXCEEDING);
             mHelpAndFeedbackPref = findPreference(KEY_HELP_AND_FEEDBACK);
+            mViewModePref = (ListPreference) findPreference(KEY_VIEW_MODE);
 
             mCheckForUpdatePref.setSummary(String.format(getString(R.string.version_name), BuildConfig.VERSION_NAME));
 
@@ -108,12 +112,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             mRemindExceedingPref.setSummary(
                     getPreferenceManager().getSharedPreferences().getString(KEY_REMIND_EXCEEDING, "1000"));
 
+            mViewModePref.setSummary(
+                    getPreferenceManager().getSharedPreferences().getString(KEY_VIEW_MODE, "月"));
+
             mCheckForUpdatePref.setOnPreferenceClickListener(this);
             mHelpAndFeedbackPref.setOnPreferenceClickListener(this);
             mRemindAddBillPref.setOnPreferenceClickListener(this);
 
             mEnableRemindAddBillPref.setOnPreferenceChangeListener(this);
             mEnableRemindExceedingPref.setOnPreferenceChangeListener(this);
+            mViewModePref.setOnPreferenceChangeListener(this);
         }
 
         @Override
@@ -154,6 +162,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 mRemindExceedingPref.setEnabled((boolean) newValue);
                 mRemindExceedingPref.setSummary(
                         getPreferenceManager().getSharedPreferences().getString(KEY_REMIND_EXCEEDING, "1000"));
+            } else if (KEY_VIEW_MODE.equals(key)) {
+                mViewModePref.setSummary(newValue.toString());
             }
             return true;
         }

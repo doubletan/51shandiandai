@@ -1,7 +1,12 @@
 package org.xqj.bill;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,17 +16,26 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
+import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.TextView;
+
+import org.xqj.bill.model.BillItem;
+
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener,
+        DialogCreatable, DatePickerDialog.OnDateSetListener {
 
     private static final float RELATIVE_SIZE = 1.3f;
 
@@ -36,6 +50,16 @@ public class MainActivity extends AppCompatActivity {
     private BillDetailsFragment mBillDetailsFragment;
     private BillPieChartFragment mBillPieChartFragment;
 
+    private SharedPreferences mDefaultPreferences;
+
+    private DialogFragment mDialogFragment;
+
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+
+    private Realm mRealm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,22 +73,92 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
         mTabLayout.setupWithViewPager(mViewPager);
 
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddBillActivity.start(MainActivity.this);
-            }
-        });
+        mFab.setOnClickListener(this);
+        mDateTextView.setOnClickListener(this);
 
-        setDateString(2015, "3月14日");
-        setIncome(13456.78f);
-        setExpense(1345.78f);
+        mRealm = Realm.getInstance(this);
+
+        mDefaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mDefaultPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        Calendar calendar = Calendar.getInstance();
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        updateDisplayInfo();
     }
 
-    private void setDateString(int year, String subStr) {
-        String yearStr = Integer.toString(year);
-        String dateString = String.format(getString(R.string.date_format), yearStr, subStr);
-        int start = dateString.indexOf(subStr);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDefaultPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void updateDisplayInfo() {
+        String viewMode = mDefaultPreferences.getString(PreferenceKeys.KEY_VIEW_MODE, "月");
+        Calendar calendar = Calendar.getInstance();
+        Calendar greaterCal = Calendar.getInstance();
+        Calendar lessCal = Calendar.getInstance();
+        greaterCal.clear();
+        lessCal.clear();
+        calendar.set(mYear, mMonth, mDay);
+        String yearStr = DateFormat.format("yyyy年", calendar).toString();
+        switch (viewMode) {
+            case "年":
+                setDateString(getString(R.string.title_year), yearStr);
+                greaterCal.set(Calendar.YEAR, mYear);
+                lessCal.set(Calendar.YEAR, mYear + 1);
+                break;
+            case "日":
+                setDateString(yearStr, DateFormat.format("MM月dd日", calendar).toString());
+                greaterCal.set(mYear, mMonth, mDay);
+                lessCal.set(mYear, mMonth, mDay + 1);
+                break;
+            case "周":
+                setDateString(yearStr, DateFormat.format("MM月dd日", calendar).toString());
+                greaterCal.set(mYear, mMonth, mDay);
+                int dayOfWeek = greaterCal.get(Calendar.DAY_OF_WEEK);
+                greaterCal.set(Calendar.DAY_OF_MONTH, mDay - dayOfWeek + 1);
+                lessCal.set(mYear, mMonth, mDay + dayOfWeek - 1);
+                break;
+            default:
+                setDateString(yearStr, DateFormat.format("MM月", calendar).toString());
+                greaterCal.set(Calendar.YEAR, mYear);
+                greaterCal.set(Calendar.MONTH, mMonth);
+                lessCal.set(Calendar.YEAR, mYear);
+                lessCal.set(Calendar.MONTH, mMonth + 1);
+                break;
+        }
+
+        long greaterTime = greaterCal.getTimeInMillis();
+        long lessTime = lessCal.getTimeInMillis();
+
+        mDefaultPreferences.edit()
+                .putLong(PreferenceKeys.KEY_GREATER_TIME, greaterTime)
+                .putLong(PreferenceKeys.KEY_LESS_TIME, lessTime)
+                .apply();
+
+        Number income = mRealm.where(BillItem.class)
+                .equalTo("income", true)
+                .greaterThanOrEqualTo("dateTime", greaterTime)
+                .lessThan("dateTime", lessTime)
+                .findAll().sum("sum");
+        setIncome(income == null ? 0 : income.floatValue());
+
+        Number expense = mRealm.where(BillItem.class)
+                .equalTo("income", false)
+                .greaterThanOrEqualTo("dateTime", greaterTime)
+                .lessThan("dateTime", lessTime)
+                .findAll().sum("sum");
+        setExpense(expense == null ? 0 : expense.floatValue());
+
+        notifyPageUpdate();
+    }
+
+    private void setDateString(String title, String content) {
+        String dateString = String.format(getString(R.string.date_format), title, content);
+        int start = dateString.indexOf(content);
         int end = dateString.length();
         SpannableStringBuilder builder = new SpannableStringBuilder(dateString);
         builder.setSpan(new RelativeSizeSpan(RELATIVE_SIZE), start, end, 0);
@@ -118,11 +212,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        removeFragmentDialog();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK
                 && (requestCode == AddBillActivity.REQUEST_EDIT_BILL || requestCode == AddBillActivity.REQUEST_NEW_BILL)) {
-            notifyPageUpdate();
+            updateDisplayInfo();
         }
     }
 
@@ -133,6 +233,47 @@ public class MainActivity extends AppCompatActivity {
         if (mBillPieChartFragment != null) {
             mBillPieChartFragment.onUpdate();
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (PreferenceKeys.KEY_VIEW_MODE.equals(key)) {
+            updateDisplayInfo();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == mFab) {
+            AddBillActivity.start(MainActivity.this);
+        } else if (v == mDateTextView) {
+            showFragmentDialog(0);
+        }
+    }
+
+    private void removeFragmentDialog() {
+        if (mDialogFragment != null) {
+            mDialogFragment.dismiss();
+            mDialogFragment = null;
+        }
+    }
+
+    private void showFragmentDialog(int dialogId) {
+        mDialogFragment = new BillDialogFragment(this, dialogId);
+        mDialogFragment.show(getFragmentManager(), "DatePicker");
+    }
+
+    @Override
+    public Dialog onCreateCustomDialog(int dialogId) {
+        return new DatePickerDialog(this, this, mYear, mMonth, mDay);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        mYear = year;
+        mMonth = monthOfYear;
+        mDay = dayOfMonth;
+        updateDisplayInfo();
     }
 
     /**

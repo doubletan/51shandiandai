@@ -7,6 +7,19 @@
 
     <!-- Strings related to Settings -->
     <string name="feature">功能</string>
+    <string name="view_mode">显示模式</string>
+    <string-array name="view_modes">
+        <item>月(默认)</item>
+        <item>年</item>
+        <item>日</item>
+        <item>周</item>
+    </string-array>
+    <string-array name="view_mode_values">
+        <item>月</item>
+        <item>年</item>
+        <item>日</item>
+        <item>周</item>
+    </string-array>
     <string name="remind">提醒</string>
     <string name="enable_remind_add_bill">记账提醒</string>
     <string name="remind_add_bill">提醒时间</string>
@@ -23,7 +36,8 @@
     <string name="feature_is_not_yet_open">此功能暂未开放</string>
 
     <!-- Strings related to Bill -->
-    <string name="date_format">%1$s年\n%2$s</string>
+    <string name="title_year">年份</string>
+    <string name="date_format">%1$s\n%2$s</string>
     <string name="income_format">收入(元)\n%s</string>
     <string name="expense_format">支出(元)\n%s</string>
 

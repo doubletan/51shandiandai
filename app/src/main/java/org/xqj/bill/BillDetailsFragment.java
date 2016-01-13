@@ -2,7 +2,9 @@ package org.xqj.bill;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +39,8 @@ public class BillDetailsFragment extends Fragment implements Updateable {
 
     private BillAdapter mBillAdapter;
 
+    private SharedPreferences mDefaultPreferences;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,7 +50,11 @@ public class BillDetailsFragment extends Fragment implements Updateable {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         ButterKnife.bind(this, view);
+
+        mDefaultPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
         mDetailsView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDetailsView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mBillAdapter = new BillAdapter(mDetailsView, new ArrayList<BillItem>());
@@ -57,13 +65,17 @@ public class BillDetailsFragment extends Fragment implements Updateable {
             }
         });
         mDetailsView.setAdapter(mBillAdapter);
+
         onUpdate();
     }
 
     private List<BillItem> getBillData() {
         Realm realm = Realm.getInstance(getActivity());
         List<BillItem> items = new ArrayList<>();
-        RealmResults<BillItem> results = realm.allObjects(BillItem.class);
+        RealmResults<BillItem> results = realm.where(BillItem.class)
+                .greaterThanOrEqualTo("dateTime", mDefaultPreferences.getLong(PreferenceKeys.KEY_GREATER_TIME, 0))
+                .lessThan("dateTime", mDefaultPreferences.getLong(PreferenceKeys.KEY_LESS_TIME, 0))
+                .findAll();
         results.sort("dateTime", Sort.DESCENDING);
         for (BillItem item : results) {
             items.add(item);

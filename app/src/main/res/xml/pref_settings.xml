@@ -1,4 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/feature">
+        <ListPreference
+            android:key="view_mode"
+            android:defaultValue="月"
+            android:entries="@array/view_modes"
+            android:entryValues="@array/view_mode_values"
+            android:title="@string/view_mode" />
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/remind">
         <SwitchPreference
