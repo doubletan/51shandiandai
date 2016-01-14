@@ -150,6 +150,8 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
             mConsumptionTypeSpinner.setSelection(
                     mConsumptionTypes.indexOf(mToBeUpdateBillItem.getConsumptionType()));
             mTypeGroup.check(mToBeUpdateBillItem.isIncome() ? R.id.income_btn : R.id.expense_btn);
+        } else {
+            mSumEditText.requestFocus();
         }
 
         setDateText(
@@ -159,6 +161,9 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (getIntent().hasExtra(EXTRA_ID)) {
+                getSupportActionBar().setTitle(R.string.edit_bill);
+            }
         }
     }
 

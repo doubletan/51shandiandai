@@ -4,6 +4,7 @@
     <string name="settings">设置</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="add_bill">添加记录</string>
+    <string name="edit_bill">修改记录</string>
 
     <!-- Strings related to Settings -->
     <string name="feature">功能</string>
@@ -77,4 +78,7 @@
         <item>星期五</item>
         <item>星期六</item>
     </string-array>
+
+    <!-- Strings related to Menu -->
+    <string name="delete">删除</string>
 </resources>

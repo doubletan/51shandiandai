@@ -66,4 +66,8 @@ public abstract class DataFragment extends Fragment implements Updateable {
     public SharedPreferences getDefaultPreferences() {
         return mDefaultPreferences;
     }
+
+    public Realm getRealm() {
+        return mRealm;
+    }
 }

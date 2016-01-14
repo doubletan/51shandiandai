@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,14 +34,13 @@ import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener,
-        DialogCreatable, DatePickerDialog.OnDateSetListener, ViewPager.OnPageChangeListener {
+        DialogCreatable, DatePickerDialog.OnDateSetListener,BillDetailsFragment.OnBillDeletedListener {
 
     private static final float RELATIVE_SIZE = 1.3f;
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.tabs) TabLayout mTabLayout;
     @Bind(R.id.view_pager) ViewPager mViewPager;
-    @Bind(R.id.fab) FloatingActionButton mFab;
     @Bind(R.id.date) TextView mDateTextView;
     @Bind(R.id.income_btn) TextView mIncomeTextView;
     @Bind(R.id.expense_btn) TextView mExpenseTextView;
@@ -71,10 +69,8 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
-        mViewPager.addOnPageChangeListener(this);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        mFab.setOnClickListener(this);
         mDateTextView.setOnClickListener(this);
 
         mRealm = Realm.getInstance(this);
@@ -207,6 +203,9 @@ public class MainActivity extends AppCompatActivity implements
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        } else if (id == R.id.action_add_bill) {
+            AddBillActivity.start(MainActivity.this);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -245,9 +244,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-        if (v == mFab) {
-            AddBillActivity.start(MainActivity.this);
-        } else if (v == mDateTextView) {
+        if (v == mDateTextView) {
             showFragmentDialog(0);
         }
     }
@@ -278,22 +275,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        if (position == 1) {
-            mFab.setVisibility(View.GONE);
-        } else {
-            mFab.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
+    public void onBillDeleted(int itemId) {
+        updateDisplayInfo();
     }
 
     /**

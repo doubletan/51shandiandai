@@ -1,6 +1,7 @@
 package org.xqj.bill;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,7 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,6 +38,19 @@ public class BillDetailsFragment extends DataFragment {
     @Bind(R.id.tips) TextView mNoDataTips;
 
     private BillAdapter mBillAdapter;
+    private int mIdxForDisplayedMenu;
+
+    private OnBillDeletedListener mCallback;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mCallback = (OnBillDeletedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnBillDeletedListener");
+        }
+    }
 
     @Nullable
     @Override
@@ -57,7 +73,15 @@ public class BillDetailsFragment extends DataFragment {
                 AddBillActivity.start(getActivity(), mBillAdapter.getDataList().get(position).getId());
             }
         });
+        mBillAdapter.setOnItemLongClickListener(new BillAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View v, int position) {
+                mIdxForDisplayedMenu = position;
+                mDetailsView.showContextMenuForChild(v);
+            }
+        });
         mDetailsView.setAdapter(mBillAdapter);
+        registerForContextMenu(mDetailsView);
 
         onUpdate();
     }
@@ -78,6 +102,29 @@ public class BillDetailsFragment extends DataFragment {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.menu_bill_context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.delete) {
+            getRealm().beginTransaction();
+            BillItem billItem = mBillAdapter.getDataList().get(mIdxForDisplayedMenu);
+            int itemId = billItem.getId();
+            billItem.removeFromRealm();
+            getRealm().commitTransaction();
+            mCallback.onBillDeleted(itemId);
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    public interface OnBillDeletedListener {
+        void onBillDeleted(int itemId);
+    }
+
     public static class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
 
         private RecyclerView mBindView;
@@ -92,6 +139,18 @@ public class BillDetailsFragment extends DataFragment {
                 if (mBindView != null && mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClick(v, mBindView.getChildAdapterPosition(v));
                 }
+            }
+        };
+
+        private OnItemLongClickListener mOnItemLongClickListener;
+
+        private View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mBindView != null && mOnItemLongClickListener != null) {
+                    mOnItemLongClickListener.onItemLongClick(v, mBindView.getChildAdapterPosition(v));
+                }
+                return true;
             }
         };
 
@@ -131,10 +190,19 @@ public class BillDetailsFragment extends DataFragment {
             mOnItemClickListener = null;
         }
 
+        public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+            mOnItemLongClickListener = onItemLongClickListener;
+        }
+
+        public void removeOnItemLongClickListener() {
+            mOnItemLongClickListener = null;
+        }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             ViewHolder holder = new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_bill, parent, false));
             holder.itemView.setOnClickListener(mOnClickListener);
+            holder.itemView.setOnLongClickListener(mOnLongClickListener);
             return holder;
         }
 
@@ -210,6 +278,10 @@ public class BillDetailsFragment extends DataFragment {
 
         public interface OnItemClickListener {
             void onItemClick(View v, int position);
+        }
+
+        public interface OnItemLongClickListener {
+            void onItemLongClick(View v, int position);
         }
     }
 }
