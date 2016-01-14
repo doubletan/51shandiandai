@@ -37,8 +37,6 @@ import io.realm.Realm;
  */
 public class BackupOrRestoreActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String KEY_LAST_BACKUP_TIME = "last_backup_time";
-
     private static final String BACKUP_DIR = "PersonalBill";
     private static final String BACKUP_FILE = "bill.backup";
 
@@ -56,13 +54,14 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
         mBackupBtn.setOnClickListener(this);
         mRestoreBtn.setOnClickListener(this);
 
-        long preBackupTime = PreferenceManager.getDefaultSharedPreferences(this).getLong(KEY_LAST_BACKUP_TIME, -1);
+        long preBackupTime = PreferenceManager.getDefaultSharedPreferences(this)
+                .getLong(PreferenceKeys.KEY_LAST_BACKUP_TIME, -1);
         Calendar calendar = Calendar.getInstance();
         if (preBackupTime != -1) {
             calendar.setTimeInMillis(preBackupTime);
         }
-        mStatusText.setText(
-                String.format(getString(R.string.backup_succeed_format), DateFormat.format("yyyy年MM月dd日 hh:mm", calendar)));
+        mStatusText.setText(String.format(
+                getString(R.string.backup_succeed_format), DateFormat.format("yyyy年MM月dd日 hh:mm", calendar)));
     }
 
     @Override
@@ -155,10 +154,10 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
             oos.close();
             os.close();
             Calendar calendar = Calendar.getInstance();
-            mStatusText.setText(
-                    String.format(getString(R.string.backup_succeed_format), DateFormat.format("yyyy年MM月dd日 hh:mm", calendar)));
+            mStatusText.setText(String.format(
+                    getString(R.string.backup_succeed_format), DateFormat.format("yyyy年MM月dd日 hh:mm", calendar)));
             PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putLong(KEY_LAST_BACKUP_TIME, calendar.getTimeInMillis())
+                    .putLong(PreferenceKeys.KEY_LAST_BACKUP_TIME, calendar.getTimeInMillis())
                     .apply();
             Toast.makeText(this, R.string.backup_succeed, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {

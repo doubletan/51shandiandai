@@ -11,6 +11,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.widget.TimePicker;
@@ -100,7 +101,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             mHelpAndFeedbackPref = findPreference(KEY_HELP_AND_FEEDBACK);
             mViewModePref = (ListPreference) findPreference(KEY_VIEW_MODE);
 
-            mCheckForUpdatePref.setSummary(String.format(getString(R.string.version_name), BuildConfig.VERSION_NAME));
+            mCheckForUpdatePref.setSummary(
+                    String.format(getString(R.string.version_name), BuildConfig.VERSION_NAME));
 
             mRemindAddBillPref.setEnabled(
                     getPreferenceManager().getSharedPreferences().getBoolean(KEY_ENABLE_REMIND_ADD_BILL, false));
@@ -110,7 +112,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             mRemindExceedingPref.setEnabled(
                     getPreferenceManager().getSharedPreferences().getBoolean(KEY_ENABLE_REMIND_EXCEEDING, false));
             mRemindExceedingPref.setSummary(
-                    getPreferenceManager().getSharedPreferences().getString(KEY_REMIND_EXCEEDING, "1000"));
+                    getPreferenceManager().getSharedPreferences().getString(
+                            KEY_REMIND_EXCEEDING, getString(R.string.remind_exceeding_default_summary)));
 
             mViewModePref.setSummary(
                     getPreferenceManager().getSharedPreferences().getString(KEY_VIEW_MODE, "月"));
@@ -128,7 +131,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onResume() {
             super.onResume();
             getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-            mRemindExceedingPref.setSummary(mRemindExceedingPref.getText());
         }
 
         @Override
@@ -161,7 +163,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             } else if (KEY_ENABLE_REMIND_EXCEEDING.equals(key)) {
                 mRemindExceedingPref.setEnabled((boolean) newValue);
                 mRemindExceedingPref.setSummary(
-                        getPreferenceManager().getSharedPreferences().getString(KEY_REMIND_EXCEEDING, "1000"));
+                        getPreferenceManager().getSharedPreferences().getString(
+                                KEY_REMIND_EXCEEDING, getString(R.string.remind_exceeding_default_summary)));
             } else if (KEY_VIEW_MODE.equals(key)) {
                 mViewModePref.setSummary(newValue.toString());
             }
@@ -171,7 +174,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (KEY_REMIND_EXCEEDING.equals(key)) {
-                mRemindExceedingPref.setSummary(mRemindExceedingPref.getText());
+                String value = mRemindExceedingPref.getText();
+                if (TextUtils.isEmpty(value) || Float.parseFloat(value) == 0) {
+                    value = getString(R.string.remind_exceeding_default_summary);
+                    mRemindExceedingPref.setText(value);
+                    getPreferenceManager().getSharedPreferences().edit().putString(
+                            KEY_REMIND_EXCEEDING, value).apply();
+                    Toast.makeText(getActivity(), R.string.remind_exceeding_empty_tips, Toast.LENGTH_SHORT).show();
+                }
+                mRemindExceedingPref.setSummary(value);
             }
         }
 
@@ -195,7 +206,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             Date when = calendar.getTime();
             mRemindAddBillPref.setSummary(DateFormat.getTimeFormat(getActivity()).format(when));
-            getPreferenceManager().getSharedPreferences().edit().putLong(KEY_REMIND_ADD_BILL, when.getTime()).apply();
+            getPreferenceManager().getSharedPreferences().edit().putLong(
+                    KEY_REMIND_ADD_BILL, when.getTime()).apply();
         }
 
         @Override

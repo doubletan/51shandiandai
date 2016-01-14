@@ -31,6 +31,7 @@
     <string name="enable_remind_exceeding">超额提醒</string>
     <string name="remind_exceeding">设置额度</string>
     <string name="remind_exceeding_default_summary">1000</string>
+    <string name="remind_exceeding_empty_tips">额度不能为零</string>
     <string name="info_default">Unknown</string>
     <string name="check_for_update">检查更新</string>
     <string name="already_the_newest_version">已是最新版本</string>

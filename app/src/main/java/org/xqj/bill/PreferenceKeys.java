@@ -15,5 +15,5 @@ public class PreferenceKeys {
 
     public static final String KEY_GREATER_TIME = "greater_time";
     public static final String KEY_LESS_TIME = "less_time";
-    public static final String KEY_ONLY_SHOW_INCOME_IN_CHART = "only_show_income_in_chart";
+    public static final String KEY_LAST_BACKUP_TIME = "last_backup_time";
 }
