@@ -118,9 +118,9 @@ public class MainActivity extends AppCompatActivity implements
             case "周":
                 setDateString(yearStr, DateFormat.format("MM月dd日", calendar).toString());
                 greaterCal.set(mYear, mMonth, mDay);
-                int dayOfWeek = greaterCal.get(Calendar.DAY_OF_WEEK);
-                greaterCal.set(Calendar.DAY_OF_MONTH, mDay - dayOfWeek + 1);
-                lessCal.set(mYear, mMonth, mDay + dayOfWeek - 1);
+                int dayOfWeek = greaterCal.get(Calendar.DAY_OF_WEEK) - 1;
+                greaterCal.set(Calendar.DAY_OF_MONTH, mDay - dayOfWeek);
+                lessCal.set(mYear, mMonth, mDay + 7 - dayOfWeek);
                 break;
             default:
                 setDateString(yearStr, DateFormat.format("MM月", calendar).toString());

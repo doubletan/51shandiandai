@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import org.xqj.bill.model.BillItem;
 import org.xqj.bill.widget.DividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -85,6 +87,9 @@ public class BillDetailsFragment extends Fragment implements Updateable {
 
     @Override
     public void onUpdate() {
+        mBillAdapter.updateViewMode(
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .getString(PreferenceKeys.KEY_VIEW_MODE, "月"));
         List<BillItem> originItems = mBillAdapter.getDataList();
         originItems.clear();
         List<BillItem> items = getBillData();
@@ -93,6 +98,7 @@ public class BillDetailsFragment extends Fragment implements Updateable {
             mBillAdapter.updateDataList(items);
             mNoDataTips.setVisibility(View.GONE);
         } else {
+            mBillAdapter.notifyDataSetChanged();
             mNoDataTips.setVisibility(View.VISIBLE);
         }
     }
@@ -114,15 +120,28 @@ public class BillDetailsFragment extends Fragment implements Updateable {
             }
         };
 
+        private String mViewMode;
+        private Calendar mCalendar;
+
+        private String[] mWeekString;
+
         public BillAdapter(RecyclerView recyclerView, List<BillItem> items) {
             mBindView = recyclerView;
             mContext = mBindView.getContext();
             mBillItems = items;
+            mCalendar = Calendar.getInstance();
+            mViewMode = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getString(PreferenceKeys.KEY_VIEW_MODE, "月");
+            mWeekString = mContext.getResources().getStringArray(R.array.week_str);
         }
 
         public void updateDataList(List<BillItem> items) {
             mBillItems = items;
             notifyDataSetChanged();
+        }
+
+        public void updateViewMode(String mode) {
+            mViewMode = mode;
         }
 
         public List<BillItem> getDataList() {
@@ -149,6 +168,46 @@ public class BillDetailsFragment extends Fragment implements Updateable {
         public void onBindViewHolder(ViewHolder holder, int position) {
             BillItem item = mBillItems.get(position);
             String typeName = item.getConsumptionType().getTypeName();
+            mCalendar.setTimeInMillis(item.getDateTime());
+            holder.date.setVisibility(View.VISIBLE);
+            switch (mViewMode) {
+                case "年":
+                    int month = mCalendar.get(Calendar.MONTH);
+                    CharSequence monthStr = DateFormat.format("MM月", mCalendar);
+                    holder.date.setText(monthStr);
+                    if (position != 0) {
+                        mCalendar.setTimeInMillis(mBillItems.get(position - 1).getDateTime());
+                        if (month == mCalendar.get(Calendar.MONTH)) {
+                            holder.date.setVisibility(View.GONE);
+                        }
+                    }
+                    break;
+                case "日":
+                    holder.date.setVisibility(View.GONE);
+                    break;
+                case "周":
+                    int dayOfWeek = mCalendar.get(Calendar.DAY_OF_WEEK);
+                    CharSequence dayOfWeekStr = mWeekString[mCalendar.get(Calendar.DAY_OF_WEEK) - 1];
+                    holder.date.setText(dayOfWeekStr);
+                    if (position != 0) {
+                        mCalendar.setTimeInMillis(mBillItems.get(position - 1).getDateTime());
+                        if (dayOfWeek == mCalendar.get(Calendar.DAY_OF_WEEK)) {
+                            holder.date.setVisibility(View.GONE);
+                        }
+                    }
+                    break;
+                default:
+                    int day = mCalendar.get(Calendar.DAY_OF_MONTH);
+                    CharSequence dayOfMonthStr = DateFormat.format("MM月dd日", mCalendar);
+                    holder.date.setText(dayOfMonthStr);
+                    if (position != 0) {
+                        mCalendar.setTimeInMillis(mBillItems.get(position - 1).getDateTime());
+                        if (day == mCalendar.get(Calendar.DAY_OF_MONTH)) {
+                            holder.date.setVisibility(View.GONE);
+                        }
+                    }
+                    break;
+            }
             holder.msg.setText(
                     TextUtils.isEmpty(item.getNote())
                             ? typeName : String.format("%1$s-%2$s", typeName, item.getNote()));
@@ -163,6 +222,7 @@ public class BillDetailsFragment extends Fragment implements Updateable {
 
         static class ViewHolder extends RecyclerView.ViewHolder {
 
+            @Bind(R.id.date) TextView date;
             @Bind(R.id.msg) TextView msg;
             @Bind(R.id.sum) TextView sum;
             @Bind(R.id.type_img) ImageView typeImg;
