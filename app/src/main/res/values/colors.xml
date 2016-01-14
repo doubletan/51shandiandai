@@ -5,4 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="noDataTips">#C9C9C9</color>
+
+    <color name="accent_light">#ff3367d6</color>
+    <color name="highlight_color">#ffff6500</color>
+    <color name="link_color">#ffffffff</color>
 </resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/illustration" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/header"
+            android:layout_gravity="top"
+            android:background="@drawable/illustration_tile"
+            android:ellipsize="end"
+            android:lineSpacingExtra="@dimen/header_title_line_spacing_extra"
+            android:paddingBottom="@dimen/header_title_padding_bottom"
+            android:paddingLeft="@dimen/layout_margin_sides"
+            android:paddingRight="@dimen/layout_margin_sides"
+            android:paddingTop="@dimen/header_title_padding_top"
+            android:singleLine="true"
+            android:text="@string/backup_and_restore"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/header_title_size" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:fontFamily="sans-serif-light"
+            android:paddingBottom="@dimen/status_padding_bottom"
+            android:paddingLeft="@dimen/layout_margin_sides"
+            android:paddingRight="@dimen/layout_margin_sides"
+            android:paddingTop="@dimen/status_padding_top"
+            android:text="@string/timely_backup"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/status_text_size" />
+
+        <include layout="@layout/system_update_button_layout" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -16,4 +16,15 @@
     <dimen name="item_margin">12dp</dimen>
 
     <dimen name="type_img_width">32dp</dimen>
+
+    <dimen name="header_title_size">24.0sp</dimen>
+    <dimen name="header_title_padding_bottom">18.0dip</dimen>
+    <dimen name="header_title_padding_top">0.0dip</dimen>
+    <dimen name="layout_margin_sides">40.0dip</dimen>
+    <dimen name="header_title_line_spacing_extra">3.669983sp</dimen>
+    <dimen name="header_title_margin_bottom">16.0dip</dimen>
+    <dimen name="button_layout_padding_right">24.0dip</dimen>
+    <dimen name="status_text_size">18.0sp</dimen>
+    <dimen name="status_padding_top">20.0dip</dimen>
+    <dimen name="status_padding_bottom">16.0dip</dimen>
 </resources>

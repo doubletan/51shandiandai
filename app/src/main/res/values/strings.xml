@@ -9,6 +9,7 @@
     <!-- Strings related to Settings -->
     <string name="feature">功能</string>
     <string name="view_mode">显示模式</string>
+    <string name="backup_or_restore">备份/恢复</string>
     <string-array name="view_modes">
         <item>月(默认)</item>
         <item>年</item>
@@ -81,4 +82,16 @@
 
     <!-- Strings related to Menu -->
     <string name="delete">删除</string>
+    <string name="restore_data">恢复数据</string>
+    <string name="backup_data">备份数据</string>
+
+    <!-- Strings related to Backup or Restore -->
+    <string name="backup_and_restore">备份 &amp; 恢复</string>
+    <string name="timely_backup">及时备份可防止数据丢失。</string>
+    <string name="backup_failed">备份失败，无权限写入文件。</string>
+    <string name="backup_succeed_format">及时备份可防止数据丢失。\n最后备份时间：%s。</string>
+    <string name="backup_succeed">备份成功</string>
+    <string name="restore_failed">恢复失败，备份文件异常。</string>
+    <string name="restore_succeed_text">数据已恢复。</string>
+    <string name="restore_succeed">数据恢复成功</string>
 </resources>
