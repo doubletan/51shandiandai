@@ -35,7 +35,7 @@ import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener,
-        DialogCreatable, DatePickerDialog.OnDateSetListener {
+        DialogCreatable, DatePickerDialog.OnDateSetListener, ViewPager.OnPageChangeListener {
 
     private static final float RELATIVE_SIZE = 1.3f;
 
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+        mViewPager.addOnPageChangeListener(this);
         mTabLayout.setupWithViewPager(mViewPager);
 
         mFab.setOnClickListener(this);
@@ -274,6 +275,25 @@ public class MainActivity extends AppCompatActivity implements
         mMonth = monthOfYear;
         mDay = dayOfMonth;
         updateDisplayInfo();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (position == 1) {
+            mFab.setVisibility(View.GONE);
+        } else {
+            mFab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 
     /**

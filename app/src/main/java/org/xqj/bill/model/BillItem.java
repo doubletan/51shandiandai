@@ -16,7 +16,7 @@ public class BillItem extends RealmObject {
 
     private boolean income;// true 为收入
 
-    private ConsumptionType consumptionType;// 消费类型
+    private String consumptionType;// 消费类型
 
     private float sum;// 金额
 
@@ -32,11 +32,11 @@ public class BillItem extends RealmObject {
         this.id = id;
     }
 
-    public ConsumptionType getConsumptionType() {
+    public String getConsumptionType() {
         return this.consumptionType;
     }
 
-    public void setConsumptionType(ConsumptionType consumptionType) {
+    public void setConsumptionType(String consumptionType) {
         this.consumptionType = consumptionType;
     }
 

@@ -148,7 +148,7 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
             mNoteEditText.setText(mToBeUpdateBillItem.getNote());
             mSumEditText.setText(Float.toString(mToBeUpdateBillItem.getSum()));
             mConsumptionTypeSpinner.setSelection(
-                    mConsumptionTypes.indexOf(mToBeUpdateBillItem.getConsumptionType().getTypeName()));
+                    mConsumptionTypes.indexOf(mToBeUpdateBillItem.getConsumptionType()));
             mTypeGroup.check(mToBeUpdateBillItem.isIncome() ? R.id.income_btn : R.id.expense_btn);
         }
 
@@ -268,7 +268,8 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
             item.setConsumptionType(
                     mRealm.where(ConsumptionType.class)
                             .equalTo("typeName", mConsumptionTypes.get(mConsumptionTypeSpinner.getSelectedItemPosition()))
-                            .findFirst());
+                            .findFirst()
+                            .getTypeName());
             mRealm.copyToRealmOrUpdate(item);
             mRealm.commitTransaction();
             setResult(RESULT_OK);

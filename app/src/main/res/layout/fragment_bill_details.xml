@@ -10,14 +10,5 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/item_bill" />
 
-    <TextView
-        android:id="@+id/tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawablePadding="@dimen/horizontal_margin_half"
-        android:drawableTop="@drawable/fail"
-        android:gravity="center"
-        android:text="@string/no_related_data"
-        android:textColor="@color/noDataTips" />
+    <include layout="@layout/layout_no_data" />
 </FrameLayout>

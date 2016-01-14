@@ -2,11 +2,9 @@ package org.xqj.bill;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,22 +24,17 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmResults;
-import io.realm.Sort;
 
 /**
  * @author Chaos
  *         2016/01/13.
  */
-public class BillDetailsFragment extends Fragment implements Updateable {
+public class BillDetailsFragment extends DataFragment {
 
     @Bind(R.id.details) RecyclerView mDetailsView;
     @Bind(R.id.tips) TextView mNoDataTips;
 
     private BillAdapter mBillAdapter;
-
-    private SharedPreferences mDefaultPreferences;
 
     @Nullable
     @Override
@@ -54,8 +47,6 @@ public class BillDetailsFragment extends Fragment implements Updateable {
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.bind(this, view);
-
-        mDefaultPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mDetailsView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDetailsView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
@@ -71,28 +62,12 @@ public class BillDetailsFragment extends Fragment implements Updateable {
         onUpdate();
     }
 
-    private List<BillItem> getBillData() {
-        Realm realm = Realm.getInstance(getActivity());
-        List<BillItem> items = new ArrayList<>();
-        RealmResults<BillItem> results = realm.where(BillItem.class)
-                .greaterThanOrEqualTo("dateTime", mDefaultPreferences.getLong(PreferenceKeys.KEY_GREATER_TIME, 0))
-                .lessThan("dateTime", mDefaultPreferences.getLong(PreferenceKeys.KEY_LESS_TIME, 0))
-                .findAll();
-        results.sort("dateTime", Sort.DESCENDING);
-        for (BillItem item : results) {
-            items.add(item);
-        }
-        return items;
-    }
-
     @Override
     public void onUpdate() {
-        mBillAdapter.updateViewMode(
-                PreferenceManager.getDefaultSharedPreferences(getActivity())
-                        .getString(PreferenceKeys.KEY_VIEW_MODE, "月"));
+        mBillAdapter.updateViewMode(getDefaultPreferences().getString(PreferenceKeys.KEY_VIEW_MODE, "月"));
         List<BillItem> originItems = mBillAdapter.getDataList();
         originItems.clear();
-        List<BillItem> items = getBillData();
+        List<BillItem> items = getCurrentBillData();
         originItems.addAll(items);
         if (!originItems.isEmpty()) {
             mBillAdapter.updateDataList(items);
@@ -167,7 +142,7 @@ public class BillDetailsFragment extends Fragment implements Updateable {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             BillItem item = mBillItems.get(position);
-            String typeName = item.getConsumptionType().getTypeName();
+            String typeName = item.getConsumptionType();
             mCalendar.setTimeInMillis(item.getDateTime());
             holder.date.setVisibility(View.VISIBLE);
             switch (mViewMode) {
