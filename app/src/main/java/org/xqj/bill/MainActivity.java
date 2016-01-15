@@ -1,8 +1,10 @@
 package org.xqj.bill;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -36,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener,
         DialogCreatable, DatePickerDialog.OnDateSetListener, BillDetailsFragment.OnBillDeletedListener {
 
+    private static final int DIALOG_DATE = 1;
+    private static final int DIALOG_EXCEEDING_LIMIT = 2;
+
     private static final float RELATIVE_SIZE = 1.3f;
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements
     private int mDay;
 
     private Realm mRealm;
+
+    private float mMonthExpense = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +155,12 @@ public class MainActivity extends AppCompatActivity implements
                 .greaterThanOrEqualTo("dateTime", greaterTime)
                 .lessThan("dateTime", lessTime)
                 .findAll().sum("sum");
-        setExpense(expense == null ? 0 : expense.floatValue());
+        float expenseValue = expense == null ? 0 : expense.floatValue();
+        setExpense(expenseValue);
+
+        if ("月".equals(viewMode)) {
+            mMonthExpense = expenseValue;
+        }
 
         notifyPageUpdate();
     }
@@ -223,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements
         if (resultCode == RESULT_OK
                 && (requestCode == AddBillActivity.REQUEST_EDIT_BILL || requestCode == AddBillActivity.REQUEST_NEW_BILL)) {
             updateDisplayInfo();
+
+            showExpenseDialogIfNeed();
         }
     }
 
@@ -245,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         if (v == mDateTextView) {
-            showFragmentDialog(0);
+            showFragmentDialog(DIALOG_DATE, "DatePicker");
         }
     }
 
@@ -256,14 +270,35 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void showFragmentDialog(int dialogId) {
+    private void showFragmentDialog(int dialogId, String tag) {
+        removeFragmentDialog();
         mDialogFragment = new BillDialogFragment(this, dialogId);
-        mDialogFragment.show(getFragmentManager(), "DatePicker");
+        mDialogFragment.show(getFragmentManager(), tag);
     }
 
     @Override
     public Dialog onCreateCustomDialog(int dialogId) {
-        return new DatePickerDialog(this, this, mYear, mMonth, mDay);
+        if (dialogId == DIALOG_DATE) {
+            return new DatePickerDialog(this, this, mYear, mMonth, mDay);
+        } else {
+
+            float limit = getMonthExpenseLimit();
+
+            return new AlertDialog.Builder(this)
+                    .setTitle(R.string.exceeding_limit_title)
+                    .setMessage(mMonthExpense > limit ? getString(R.string.more_that_exceeding_limit, limit, mMonthExpense - limit)
+                            : mMonthExpense < limit ? getString(R.string.less_that_exceeding_limit, limit, limit - mMonthExpense)
+                            : String.format(getString(R.string.equals_to_exceeding_limit), limit))
+                    .setNeutralButton(R.string.never_show_this, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mDefaultPreferences.edit()
+                                    .putBoolean(PreferenceKeys.KEY_ENABLE_REMIND_EXCEEDING, false).apply();
+                        }
+                    })
+                    .setPositiveButton(R.string.confirm, null)
+                    .create();
+        }
     }
 
     @Override
@@ -272,6 +307,47 @@ public class MainActivity extends AppCompatActivity implements
         mMonth = monthOfYear;
         mDay = dayOfMonth;
         updateDisplayInfo();
+    }
+
+    private float getMonthExpenseLimit() {
+        // 获取当前月支出上限
+        return Float.parseFloat(mDefaultPreferences.getString(
+                PreferenceKeys.KEY_REMIND_EXCEEDING, getString(R.string.remind_exceeding_default_summary)));
+    }
+
+    private float getMonthExpense() {
+        // 设置月初时间
+        Calendar greaterCal = Calendar.getInstance();
+        greaterCal.clear();
+        greaterCal.set(Calendar.YEAR, mYear);
+        greaterCal.set(Calendar.MONTH, mMonth);
+
+        // 设置月尾时间
+        Calendar lessCal = Calendar.getInstance();
+        lessCal.clear();
+        lessCal.set(Calendar.YEAR, mYear);
+        lessCal.set(Calendar.MONTH, mMonth + 1);
+
+        // 获取月支出
+        Number number = mRealm.where(BillItem.class)
+                .equalTo("income", false)
+                .greaterThanOrEqualTo("dateTime", greaterCal.getTimeInMillis())
+                .lessThan("dateTime", lessCal.getTimeInMillis())
+                .findAll().sum("sum");
+        return number == null ? 0 : number.floatValue();
+    }
+
+    private void showExpenseDialogIfNeed() {
+        if (mDefaultPreferences.getBoolean(PreferenceKeys.KEY_ENABLE_REMIND_EXCEEDING, false)) {
+            if (!"月".equals(mDefaultPreferences.getString(PreferenceKeys.KEY_VIEW_MODE, "月"))) {
+                mMonthExpense = getMonthExpense();
+            }
+
+            float limit = getMonthExpenseLimit();
+            if (limit * 0.8 < mMonthExpense) {// 超出上限 80% 则提示
+                showFragmentDialog(DIALOG_EXCEEDING_LIMIT, "ExpenseTips");
+            }
+        }
     }
 
     @Override

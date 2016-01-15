@@ -2,7 +2,6 @@
     <string name="app_name">个人账本</string>
 
     <string name="settings">设置</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="add_bill">添加记录</string>
     <string name="edit_bill">修改记录</string>
 
@@ -29,7 +28,7 @@
     <string name="other">其他</string>
     <string name="version_name">当前版本: %s</string>
     <string name="enable_remind_exceeding">超额提醒</string>
-    <string name="remind_exceeding">设置额度</string>
+    <string name="remind_exceeding">每月额度</string>
     <string name="remind_exceeding_default_summary">1000</string>
     <string name="remind_exceeding_empty_tips">额度不能为零</string>
     <string name="info_default">Unknown</string>
@@ -68,6 +67,7 @@
     <string name="input_consumption_type">请输入类别名称</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
+    <string name="never_show_this">不再提示</string>
 
     <string name="no_related_data">暂无相关数据</string>
 
@@ -80,6 +80,11 @@
         <item>星期五</item>
         <item>星期六</item>
     </string-array>
+
+    <string name="exceeding_limit_title">额度提醒</string>
+    <string name="less_that_exceeding_limit">当前月额度为：%1$s元\n距离上限还有：%2$s元</string>
+    <string name="equals_to_exceeding_limit">当前月额度为：%1$s元\n当月支出已达上限</string>
+    <string name="more_that_exceeding_limit">当前月额度为：%1$s元\n超出上限：%2$s元</string>
 
     <!-- Strings related to Menu -->
     <string name="delete">删除</string>

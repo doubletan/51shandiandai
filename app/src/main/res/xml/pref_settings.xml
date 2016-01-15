@@ -39,6 +39,7 @@
             android:enabled="false"
             android:inputType="numberDecimal"
             android:key="remind_exceeding"
+            android:defaultValue="@string/remind_exceeding_default_summary"
             android:summary="@string/remind_exceeding_default_summary"
             android:title="@string/remind_exceeding" />
     </PreferenceCategory>
