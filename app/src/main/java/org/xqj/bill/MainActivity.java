@@ -34,7 +34,7 @@ import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener,
-        DialogCreatable, DatePickerDialog.OnDateSetListener,BillDetailsFragment.OnBillDeletedListener {
+        DialogCreatable, DatePickerDialog.OnDateSetListener, BillDetailsFragment.OnBillDeletedListener {
 
     private static final float RELATIVE_SIZE = 1.3f;
 
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (PreferenceKeys.KEY_VIEW_MODE.equals(key)) {
+        if (PreferenceKeys.KEY_VIEW_MODE.equals(key) || PreferenceKeys.KEY_LAST_RESTORE_TIME.equals(key)) {
             updateDisplayInfo();
         }
     }

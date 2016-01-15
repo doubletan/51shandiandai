@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @author Chaos
  *         2016/01/14.
  */
-public class SerializableConsumptionType implements Serializable{
+public class SerializableConsumptionType implements Serializable {
 
     private String typeName;
 

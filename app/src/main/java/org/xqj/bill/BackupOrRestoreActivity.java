@@ -105,29 +105,46 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
         try {
             FileInputStream is = new FileInputStream(backupFile);
             ObjectInputStream ois = new ObjectInputStream(is);
+
+            // read the size of types
             int size = ois.readInt();
+            // read consumption types
             for (int i = 0; i < size; i++) {
                 types.add((SerializableConsumptionType) ois.readObject());
             }
+
+            // read the size of bills
             size = ois.readInt();
+            // get current max id of bill in local database
             Number number = realm.where(BillItem.class).max("id");
             int maxId = number == null ? 0 : number.intValue();
+
+            // read bills
             for (int i = 0; i < size; i++) {
                 SerializableBillItem item = (SerializableBillItem) ois.readObject();
+                // set bill's id
                 item.setId(maxId + i + 1);
                 items.add(item);
             }
+
+            // release resources
             ois.close();
             is.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             mStatusText.setText(R.string.restore_failed);
         }
+
+        // save restore's data to local database
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(SerializeUtils.toConsumptionTypeList(types));
         realm.copyToRealm(SerializeUtils.toBillItemList(items));
         realm.commitTransaction();
 
+        // save the timestamp of successful restore
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putLong(PreferenceKeys.KEY_LAST_RESTORE_TIME, System.currentTimeMillis())
+                .apply();
         Toast.makeText(this, R.string.restore_succeed, Toast.LENGTH_SHORT).show();
     }
 
@@ -136,26 +153,41 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
         try {
             FileOutputStream os = new FileOutputStream(backupFile);
             ObjectOutputStream oos = new ObjectOutputStream(os);
+
+            // get all consumption types in local database
             List<SerializableConsumptionType> types =
                     SerializeUtils.toSerializableConsumptionTypeList(realm.allObjects(ConsumptionType.class));
+
+            // write the size of types
             oos.writeInt(types.size());
             oos.flush();
+            // write consumption types to file
             for (SerializableConsumptionType type : types) {
                 oos.writeObject(type);
             }
+            oos.flush();
+
+            // get all bills in local database
             List<SerializableBillItem> billResults =
                     SerializeUtils.toSerializableBillItemList(realm.allObjects(BillItem.class));
+
+            // write bills to file
             oos.writeInt(billResults.size());
             oos.flush();
+            // write the size of bills
             for (SerializableBillItem item : billResults) {
                 oos.writeObject(item);
             }
             oos.flush();
+
+            // release resources
             oos.close();
             os.close();
+
             Calendar calendar = Calendar.getInstance();
             mStatusText.setText(String.format(
                     getString(R.string.backup_succeed_format), DateFormat.format("yyyy年MM月dd日 hh:mm", calendar)));
+            // save the timestamp of successful backup
             PreferenceManager.getDefaultSharedPreferences(this).edit()
                     .putLong(PreferenceKeys.KEY_LAST_BACKUP_TIME, calendar.getTimeInMillis())
                     .apply();

@@ -16,4 +16,5 @@ public class PreferenceKeys {
     public static final String KEY_GREATER_TIME = "greater_time";
     public static final String KEY_LESS_TIME = "less_time";
     public static final String KEY_LAST_BACKUP_TIME = "last_backup_time";
+    public static final String KEY_LAST_RESTORE_TIME = "last_restore_time";
 }
