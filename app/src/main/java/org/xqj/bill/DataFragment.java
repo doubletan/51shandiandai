@@ -20,7 +20,7 @@ import io.realm.Sort;
  * @author Chaos
  *         2016/01/14.
  */
-public abstract class DataFragment extends Fragment implements Updateable {
+public abstract class DataFragment extends Fragment implements Upgradeable {
 
     private Realm mRealm;
     private SharedPreferences mDefaultPreferences;

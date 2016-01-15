@@ -51,7 +51,7 @@ public class BillPieChartFragment extends DataFragment implements
         ButterKnife.bind(this, view);
         mTypeGroup.setOnCheckedChangeListener(this);
         initPieChart();
-        onUpdate();
+        onUpgrade();
     }
 
     private void initPieChart() {
@@ -82,7 +82,7 @@ public class BillPieChartFragment extends DataFragment implements
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpgrade() {
         boolean isExpense = mTypeGroup.getCheckedRadioButtonId() == R.id.expense_btn;
 
         List<String> types = getAllConsumptionType();
@@ -168,6 +168,6 @@ public class BillPieChartFragment extends DataFragment implements
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        onUpdate();
+        onUpgrade();
     }
 }

@@ -242,10 +242,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private void notifyPageUpdate() {
         if (mBillDetailsFragment != null) {
-            mBillDetailsFragment.onUpdate();
+            mBillDetailsFragment.onUpgrade();
         }
         if (mBillPieChartFragment != null) {
-            mBillPieChartFragment.onUpdate();
+            mBillPieChartFragment.onUpgrade();
         }
     }
 

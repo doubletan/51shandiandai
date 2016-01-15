@@ -83,11 +83,11 @@ public class BillDetailsFragment extends DataFragment {
         mDetailsView.setAdapter(mBillAdapter);
         registerForContextMenu(mDetailsView);
 
-        onUpdate();
+        onUpgrade();
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpgrade() {
         mBillAdapter.updateViewMode(getDefaultPreferences().getString(PreferenceKeys.KEY_VIEW_MODE, "月"));
         List<BillItem> originItems = mBillAdapter.getDataList();
         originItems.clear();

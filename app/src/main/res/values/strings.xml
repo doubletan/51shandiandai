@@ -100,4 +100,8 @@
     <string name="restore_failed">恢复失败，备份文件异常。</string>
     <string name="restore_succeed_text">数据已恢复。</string>
     <string name="restore_succeed">数据恢复成功</string>
+
+    <!-- Strings related to notification -->
+    <string name="add_bill_title">记账提醒</string>
+    <string name="add_bill_content">来记下消费记录吧 O(∩_∩)O~</string>
 </resources>

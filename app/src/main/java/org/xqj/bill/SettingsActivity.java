@@ -3,6 +3,7 @@ package org.xqj.bill;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -106,8 +107,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             mRemindAddBillPref.setEnabled(
                     getPreferenceManager().getSharedPreferences().getBoolean(KEY_ENABLE_REMIND_ADD_BILL, false));
+            Calendar hourCalendar = Calendar.getInstance();
+            hourCalendar.clear();
+            hourCalendar.set(Calendar.HOUR_OF_DAY, 10);
             mRemindAddBillPref.setSummary(DateFormat.getTimeFormat(getActivity()).format(new Date(
-                    getPreferenceManager().getSharedPreferences().getLong(KEY_REMIND_ADD_BILL, 0L))));
+                    getPreferenceManager().getSharedPreferences().getLong(KEY_REMIND_ADD_BILL, hourCalendar.getTimeInMillis()))));
 
             mRemindExceedingPref.setEnabled(
                     getPreferenceManager().getSharedPreferences().getBoolean(KEY_ENABLE_REMIND_EXCEEDING, false));
@@ -183,6 +187,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     Toast.makeText(getActivity(), R.string.remind_exceeding_empty_tips, Toast.LENGTH_SHORT).show();
                 }
                 mRemindExceedingPref.setSummary(value);
+            } else if (KEY_ENABLE_REMIND_ADD_BILL.equals(key)) {
+                getActivity().sendBroadcast(new Intent("org.xqj.bill.action.NOTIFY_TIME_CHANGED"));
             }
         }
 
@@ -201,6 +207,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             Calendar calendar = Calendar.getInstance();
+            calendar.clear();
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
 
@@ -208,6 +215,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             mRemindAddBillPref.setSummary(DateFormat.getTimeFormat(getActivity()).format(when));
             getPreferenceManager().getSharedPreferences().edit().putLong(
                     KEY_REMIND_ADD_BILL, when.getTime()).apply();
+            getActivity().sendBroadcast(new Intent("org.xqj.bill.action.NOTIFY_TIME_CHANGED"));
         }
 
         @Override
