@@ -12,6 +12,7 @@ public class PreferenceKeys {
     public static final String KEY_ENABLE_REMIND_EXCEEDING = "enable_remind_exceeding";
     public static final String KEY_REMIND_EXCEEDING = "remind_exceeding";
     public static final String KEY_VIEW_MODE = "view_mode";
+    public static final String KEY_DEFAULT_THEME = "default_theme";
 
     public static final String KEY_GREATER_TIME = "greater_time";
     public static final String KEY_LESS_TIME = "less_time";

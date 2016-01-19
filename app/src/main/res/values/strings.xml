@@ -7,6 +7,14 @@
 
     <!-- Strings related to Settings -->
     <string name="feature">功能</string>
+    <string-array name="themes">
+        <item>粉红(默认)</item>
+        <item>深蓝</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>粉红</item>
+        <item>深蓝</item>
+    </string-array>
     <string name="view_mode">显示模式</string>
     <string name="backup_or_restore">备份/恢复</string>
     <string-array name="view_modes">

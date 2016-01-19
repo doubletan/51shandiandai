@@ -10,6 +10,7 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
@@ -28,6 +29,7 @@ import static org.xqj.bill.PreferenceKeys.KEY_HELP_AND_FEEDBACK;
 import static org.xqj.bill.PreferenceKeys.KEY_REMIND_ADD_BILL;
 import static org.xqj.bill.PreferenceKeys.KEY_REMIND_EXCEEDING;
 import static org.xqj.bill.PreferenceKeys.KEY_VIEW_MODE;
+import static org.xqj.bill.PreferenceKeys.KEY_DEFAULT_THEME;
 
 /**
  * 设置页面
@@ -39,6 +41,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if ("粉红".equals(PreferenceManager.getDefaultSharedPreferences(this).getString("default_theme", "粉红"))) {
+            setTheme(R.style.AppTheme_Pink);
+        }
+
         super.onCreate(savedInstanceState);
         setupActionBar();
         getFragmentManager().beginTransaction().replace(android.R.id.content, new GeneralPreferenceFragment()).commit();
@@ -85,6 +91,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         private SwitchPreference mEnableRemindExceedingPref;
         private EditTextPreference mRemindExceedingPref;
         private Preference mHelpAndFeedbackPref;
+        private ListPreference mDefaultThemePref;
         private ListPreference mViewModePref;
 
         private DialogFragment mDialogFragment;
@@ -101,6 +108,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             mRemindExceedingPref = (EditTextPreference) findPreference(KEY_REMIND_EXCEEDING);
             mHelpAndFeedbackPref = findPreference(KEY_HELP_AND_FEEDBACK);
             mViewModePref = (ListPreference) findPreference(KEY_VIEW_MODE);
+            mDefaultThemePref = (ListPreference) findPreference(KEY_DEFAULT_THEME);
 
             mCheckForUpdatePref.setSummary(
                     String.format(getString(R.string.version_name), BuildConfig.VERSION_NAME));
@@ -121,6 +129,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             mViewModePref.setSummary(
                     getPreferenceManager().getSharedPreferences().getString(KEY_VIEW_MODE, "月"));
+            mDefaultThemePref.setSummary(
+                    getPreferenceManager().getSharedPreferences().getString(KEY_DEFAULT_THEME, "粉红"));
 
             mCheckForUpdatePref.setOnPreferenceClickListener(this);
             mHelpAndFeedbackPref.setOnPreferenceClickListener(this);
@@ -129,6 +139,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             mEnableRemindAddBillPref.setOnPreferenceChangeListener(this);
             mEnableRemindExceedingPref.setOnPreferenceChangeListener(this);
             mViewModePref.setOnPreferenceChangeListener(this);
+            mDefaultThemePref.setOnPreferenceChangeListener(this);
         }
 
         @Override
@@ -171,6 +182,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                 KEY_REMIND_EXCEEDING, getString(R.string.remind_exceeding_default_summary)));
             } else if (KEY_VIEW_MODE.equals(key)) {
                 mViewModePref.setSummary(newValue.toString());
+            } else if (KEY_DEFAULT_THEME.equals(key)) {
+                mDefaultThemePref.setSummary(newValue.toString());
+                getActivity().recreate();
             }
             return true;
         }

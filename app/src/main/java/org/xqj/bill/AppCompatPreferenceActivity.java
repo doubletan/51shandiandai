@@ -3,6 +3,7 @@ package org.xqj.bill;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -22,6 +23,10 @@ public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if ("粉红".equals(PreferenceManager.getDefaultSharedPreferences(this).getString("default_theme", "粉红"))) {
+            setTheme(R.style.AppTheme_Pink);
+        }
+
         getDelegate().installViewFactory();
         getDelegate().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);

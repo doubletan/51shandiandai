@@ -49,6 +49,10 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if ("粉红".equals(PreferenceManager.getDefaultSharedPreferences(this).getString("default_theme", "粉红"))) {
+            setTheme(R.style.AppTheme_Pink_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_or_restore);
 

@@ -1,6 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/feature">
         <ListPreference
+            android:defaultValue="pink"
+            android:entries="@array/themes"
+            android:entryValues="@array/theme_values"
+            android:key="default_theme"
+            android:title="主题" />
+
+        <ListPreference
             android:defaultValue="月"
             android:entries="@array/view_modes"
             android:entryValues="@array/view_mode_values"
@@ -36,10 +43,10 @@
             android:title="@string/remind_add_bill" />
 
         <EditTextPreference
+            android:defaultValue="@string/remind_exceeding_default_summary"
             android:enabled="false"
             android:inputType="numberDecimal"
             android:key="remind_exceeding"
-            android:defaultValue="@string/remind_exceeding_default_summary"
             android:summary="@string/remind_exceeding_default_summary"
             android:title="@string/remind_exceeding" />
     </PreferenceCategory>

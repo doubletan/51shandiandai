@@ -95,6 +95,10 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if ("粉红".equals(PreferenceManager.getDefaultSharedPreferences(this).getString("default_theme", "粉红"))) {
+            setTheme(R.style.AppTheme_Pink);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_bill);
 
@@ -261,7 +265,7 @@ public class AddBillActivity extends AppCompatActivity implements DialogCreatabl
 
             View view = this.getCurrentFocus();
             if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
 

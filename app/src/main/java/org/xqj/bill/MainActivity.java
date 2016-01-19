@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if ("粉红".equals(PreferenceManager.getDefaultSharedPreferences(this).getString("default_theme", "粉红"))) {
+            setTheme(R.style.AppTheme_Pink_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -253,6 +257,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (PreferenceKeys.KEY_VIEW_MODE.equals(key) || PreferenceKeys.KEY_LAST_RESTORE_TIME.equals(key)) {
             updateDisplayInfo();
+        } else if (PreferenceKeys.KEY_DEFAULT_THEME.equals(key)) {
+            recreate();
         }
     }
 
