@@ -5,7 +5,9 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
     @Bind(R.id.status) TextView mStatusText;
     @Bind(R.id.action_backup) Button mBackupBtn;
     @Bind(R.id.action_restore) Button mRestoreBtn;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +53,13 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_backup_or_restore);
 
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         mBackupBtn.setOnClickListener(this);
         mRestoreBtn.setOnClickListener(this);
@@ -62,6 +72,15 @@ public class BackupOrRestoreActivity extends AppCompatActivity implements View.O
         }
         mStatusText.setText(String.format(
                 getString(R.string.backup_succeed_format), DateFormat.format("yyyy年MM月dd日 hh:mm", calendar)));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
