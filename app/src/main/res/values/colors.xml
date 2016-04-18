@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#3949AB</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#3F51B5</color>
 
     <color name="colorPrimary_pink">#F06292</color>
-    <color name="colorPrimaryDark_pink">#EC407A</color>
+    <color name="colorPrimaryDark_pink">#ef528a</color>
+    <color name="colorAccent_pink">#ec6394</color>
 
     <color name="noDataTips">#C9C9C9</color>
 

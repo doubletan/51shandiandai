@@ -8,8 +8,8 @@ android {
         applicationId "org.xqj.bill"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.3"
     }
     buildTypes {
         release {
@@ -26,7 +26,7 @@ android {
         exclude "lib/x86_64/librealm-jni.so"
     }
     lintOptions {
-        abortOnError false
+        abortOnError true
     }
 }
 

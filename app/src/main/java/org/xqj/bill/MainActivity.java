@@ -228,20 +228,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        removeFragmentDialog();
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK
-                && (requestCode == AddBillActivity.REQUEST_EDIT_BILL || requestCode == AddBillActivity.REQUEST_NEW_BILL)) {
-            updateDisplayInfo();
+        updateDisplayInfo();
 
-            showExpenseDialogIfNeed();
-        }
+        showExpenseDialogIfNeed();
     }
 
     private void notifyPageUpdate() {

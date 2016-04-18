@@ -19,7 +19,7 @@
 
     <dimen name="header_title_size">24.0sp</dimen>
     <dimen name="header_title_padding_bottom">18.0dip</dimen>
-    <dimen name="header_title_padding_top">0.0dip</dimen>
+    <dimen name="header_title_padding_top">18.0dip</dimen>
     <dimen name="layout_margin_sides">40.0dip</dimen>
     <dimen name="header_title_line_spacing_extra">3.669983sp</dimen>
     <dimen name="header_title_margin_bottom">16.0dip</dimen>

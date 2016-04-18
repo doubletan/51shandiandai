@@ -13,8 +13,8 @@
         <FrameLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/illustration">
+            android:layout_height="160dp"
+            android:background="?colorAccent">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/header"
             android:layout_gravity="top"
-            android:background="@drawable/illustration_tile"
+            android:background="?colorPrimaryDark"
             android:ellipsize="end"
             android:lineSpacingExtra="@dimen/header_title_line_spacing_extra"
             android:paddingBottom="@dimen/header_title_padding_bottom"

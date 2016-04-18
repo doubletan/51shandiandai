@@ -17,7 +17,7 @@
     <style name="AppTheme.Pink">
         <item name="colorPrimary">@color/colorPrimary_pink</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_pink</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent_pink</item>
     </style>
 
     <style name="AppTheme.Pink.NoActionBar">
