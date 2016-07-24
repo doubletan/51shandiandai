@@ -71,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements
             setTheme(R.style.AppTheme_Pink_NoActionBar);
         }
 
+        if (savedInstanceState != null) {
+            savedInstanceState.remove("android:support:fragments");
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
