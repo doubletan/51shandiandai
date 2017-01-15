@@ -13,4 +13,7 @@
     <color name="accent_light">#ff3367d6</color>
     <color name="highlight_color">#ffff6500</color>
     <color name="link_color">#ffffffff</color>
+
+    <color name="colorPrimary1">#0db566</color>
+    <color name="colorPrimaryDark1">#1cc78c</color>
 </resources>

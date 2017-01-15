@@ -1,46 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.xqj.bill"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.xqj.youqianhua">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
+        android:name=".MyAppliction"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settings" />
+        <activity
+            android:name=".AddBillActivity"
+            android:label="@string/add_bill"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".BackupOrRestoreActivity"
+            android:label="@string/backup_or_restore"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".AddBillActivity"
-                  android:label="@string/add_bill"
-                  android:windowSoftInputMode="adjustResize" />
-
-        <activity android:name=".BackupOrRestoreActivity"
-                  android:label="@string/backup_or_restore"
-                  android:theme="@style/AppTheme.NoActionBar" />
-
-        <receiver android:name=".AlarmReceiver"
-                  android:exported="false">
+        <receiver
+            android:name=".AlarmReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="org.xqj.bill.action.NOTIFY_TIME_CHANGED" />
                 <action android:name="org.xqj.bill.action.NOTIFY_ADD_BILL" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="587b2e536e27a471ee001f18" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="xinhe" />
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.GuideActivity"
+            android:theme="@style/AppTheme.Splash" />
+        <activity android:name=".activity.Main2Activity"
+            android:theme="@style/AppTheme1"
+            />
     </application>
 
 </manifest>

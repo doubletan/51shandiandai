@@ -14,14 +14,6 @@
             android:key="view_mode"
             android:title="@string/view_mode" />
 
-        <Preference
-            android:key="backup_or_restore"
-            android:title="@string/backup_or_restore">
-            <intent
-                android:action="org.xqj.bill.action.BACKUP_OR_RESTORE"
-                android:targetClass="org.xqj.bill.BackupOrRestoreActivity"
-                android:targetPackage="org.xqj.bill" />
-        </Preference>
 
     </PreferenceCategory>
 

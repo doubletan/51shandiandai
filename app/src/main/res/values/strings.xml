@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">个人记账本</string>
+    <string name="app_name">有钱花</string>
 
     <string name="settings">设置</string>
     <string name="add_bill">添加记录</string>
