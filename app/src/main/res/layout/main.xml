@@ -5,24 +5,20 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bye_burger"
+    <LinearLayout
+        android:layout_above="@+id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/app_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <com.ashokvarma.bottomnavigation.BottomNavigationBar
         android:layout_alignParentBottom="true"
+        android:id="@+id/bottom_navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/colorPrimary1"
-        app:itemIconTint="#fff"
-        app:itemTextColor="#fff"
-        app:layout_behavior="@string/bye_burger_bottom_behavior"
-        app:menu="@menu/bottom_01"
-        >
-    </android.support.design.widget.BottomNavigationView>
-    <org.xqj.youqianhua.NoScrollViewPager
-        android:id="@+id/viewpager"
-        android:layout_above="@id/bye_burger"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </org.xqj.youqianhua.NoScrollViewPager>
+        android:layout_gravity="bottom"/>
 </RelativeLayout>

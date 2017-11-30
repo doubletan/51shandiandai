@@ -16,4 +16,33 @@
 
     <color name="colorPrimary1">#0db566</color>
     <color name="colorPrimaryDark1">#1cc78c</color>
+
+
+
+
+
+    <color name="teal">#00796B</color>
+    <color name="brown">#8D6E63</color>
+    <color name="blue">#2196F3</color>
+    <color name="grey">#607D8B</color>
+    <color name="orange">#F57C00</color>
+
+    <!-- 快速导航背景颜色 配色方案1-->
+    <color name="note_pressed">#b0bec5</color>
+    <color name="card_pressed">#90a4ae</color>
+    <color name="bill_pressed">#78909c</color>
+    <color name="note_auto">#78909c</color>
+    <color name="card_auto">#607d8b</color>
+    <color name="bill_auto">#546e7a</color>
+    <color name="ba_touming">#80000000</color>
+
+
+    <color name="color_ffffff">#ffffff</color>
+    <color name="nav_bg_color">#63b953</color>
+    <color name="window_background">#FFF5F5F5</color>
+
+
+
+    <color name="list_bg_true">#E0E0E0</color>
+    <color name="list_bg_fals">#ffffff</color>
 </resources>

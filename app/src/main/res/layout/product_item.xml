@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="#FCFCFC"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="1dp"
+    app:cardUseCompatPadding="true"
+    android:layout_marginRight="3dp"
+    android:layout_marginLeft="3dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.itheima.roundedimageview.RoundedImageView
+             android:id="@+id/head"
+             android:layout_marginTop="25dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+             android:layout_width="50dp"
+             android:layout_height="50dp"
+             android:src="@drawable/appicon"
+             android:scaleType="fitCenter"
+             app:riv_corner_radius="10dip"
+             app:riv_border_width="0dip"
+             app:riv_border_color="#ffffff"
+             app:riv_oval="true" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/tv_ProductName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="#323232"
+                android:text="手机贷"
+                />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/tv_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#646464"
+                android:text="手机贷"
+                android:layout_below="@+id/tv_ProductName"
+                />
+            <TextView
+                android:layout_marginTop="2dp"
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#646464"
+                android:text="手机贷"
+                android:layout_below="@+id/tv_count"
+                />
+            <TextView
+                android:layout_marginTop="2dp"
+                android:id="@+id/tv_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#f44335"
+                android:text="手机贷"
+                android:layout_below="@+id/tv_time"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/me_arrows"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

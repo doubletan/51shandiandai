@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.xqj.youqianhua">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.xqj.shandiandai">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,16 +9,24 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- 拍照 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 位置 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".MyAppliction"
+        android:name="org.xqj.shandiandai.MyAppliction"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
         <activity
-            android:name=".activity.SplashActivity"
+            android:name="org.xqj.shandiandai.activity.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -27,19 +36,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name="org.xqj.shandiandai.SettingsActivity"
             android:label="@string/settings" />
         <activity
-            android:name=".AddBillActivity"
+            android:name="org.xqj.shandiandai.AddBillActivity"
             android:label="@string/add_bill"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".BackupOrRestoreActivity"
+            android:name="org.xqj.shandiandai.BackupOrRestoreActivity"
             android:label="@string/backup_or_restore"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="org.xqj.shandiandai.activity.HomeActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="org.xqj.shandiandai.activity.HtmlActivity"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name="org.xqj.shandiandai.activity.Login2Activity"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name="org.xqj.shandiandai.activity.ProductActivity"
+            android:theme="@style/SplashTheme" />
 
         <receiver
-            android:name=".AlarmReceiver"
+            android:name="org.xqj.shandiandai.AlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="org.xqj.bill.action.NOTIFY_TIME_CHANGED" />
@@ -48,23 +69,32 @@
             </intent-filter>
         </receiver>
 
+        //下载
+        <service android:name="me.shenfan.updateapp.UpdateService"/>
+
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="587b2e536e27a471ee001f18" />
+            android:value="59b78abc99f0c776d70006f4" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="xinhe" />
+            android:value="tengxun" />
+
+        <!--诸葛 -->
+        <meta-data android:value="91be901ec8194403abb12e59fcc7baf2" android:name = "ZHUGE_APPKEY"/>
+        <meta-data android:value="先花花" android:name = "ZHUGE_CHANNEL"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="org.xqj.shandiandai.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.GuideActivity"
+            android:name="org.xqj.shandiandai.activity.GuideActivity"
             android:theme="@style/AppTheme.Splash" />
-        <activity android:name=".activity.Main2Activity"
-            android:theme="@style/AppTheme1"
-            />
+        <activity
+            android:name="org.xqj.shandiandai.activity.Main2Activity"
+            android:theme="@style/AppTheme1" />
+        <activity android:name="org.xqj.shandiandai.activity.ProductListActivity"
+            android:theme="@style/AppTheme" ></activity>
     </application>
 
 </manifest>
